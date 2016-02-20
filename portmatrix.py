@@ -30,7 +30,7 @@ me = singleton.SingleInstance()
 
 ######### Accessing the configuration file #######################################
 config = ConfigParser.RawConfigParser()
-config.read('/etc/portmatrix/main.cfg')
+config.read('./main.cfg')
 sections = config.sections()
 
 ######### Connecting to the database #############################################
