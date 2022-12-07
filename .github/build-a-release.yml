@@ -11,6 +11,6 @@ jobs:
  
     - uses: 8BitJonny/gh-get-current-pr@2.1.3
       id: PR
-      # 
+      # Psuhing to the PR
     - run: echo "Your PR number is ${{ steps.PR.outputs.number }} and its JSON is ${{ steps.PR.outputs.pr }}"
 
