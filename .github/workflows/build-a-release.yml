@@ -13,5 +13,6 @@ jobs:
         cat -v file 
         sed -i 's/\r$//' file
         sed -i 's/\n//' file
+        sed -i 's/^M$//' file 
         cat -v file
 
