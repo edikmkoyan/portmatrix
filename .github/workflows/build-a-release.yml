@@ -11,8 +11,6 @@ jobs:
         export something="${{ steps.PR.outputs.pr_body }}"
         echo $something > file
         cat -v file 
-        sed -i 's/\r$//' file
-        sed -i 's/\n//' file
-        sed -i 's/^M$//' file 
+        sed -i 's/^M//' file 
         cat -v file
 
