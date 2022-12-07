@@ -15,5 +15,5 @@ jobs:
       # Did it work?
       # maybe it needed to be in the master
       #pushing to a pull request
-    - run: echo "${{ steps.PR.outputs.pr_body }}"
+    - run: cat << EndOfMessage "${{ steps.PR.outputs.pr_body }}" EndOfMessage
 
