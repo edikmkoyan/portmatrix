@@ -11,10 +11,6 @@ jobs:
  
     - uses: 8BitJonny/gh-get-current-pr@2.1.3
       id: PR
-      # Psuhing to the PR
-      # Did it work?
-      # maybe it needed to be in the master
-
     - run: |
         echo cat ${{ steps.PR.outputs.pr_body }}
 
