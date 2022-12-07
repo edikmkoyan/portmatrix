@@ -12,5 +12,5 @@ jobs:
         echo $something > file
         cat file
         sed -i 's/\r$//' file
-        cat file
+        cat -v file
 
