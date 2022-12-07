@@ -9,8 +9,8 @@ jobs:
       id: PR
     - run: |
         export something="${{ steps.PR.outputs.pr_body }}"
-        echo $something > file
-        cat -v file | wc -l
-        sed -i 's/\r$//' file
-        cat -v file | wc -l
+        echo $something
+        #cat -v file | wc -l
+        #sed -i 's/\r$//' file
+        #cat -v file | wc -l
 
