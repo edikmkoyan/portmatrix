@@ -13,5 +13,4 @@ jobs:
       id: PR
     - run: |
         export something="${{ steps.PR.outputs.pr_body }}"
-        echo $something
 
