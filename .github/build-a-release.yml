@@ -14,6 +14,7 @@ jobs:
       # Psuhing to the PR
       # Did it work?
       # maybe it needed to be in the master
-      #pushing to a pull request
-    - run: cat ${{ steps.PR.outputs.pr_body }}
+
+    - run: |
+        echo cat ${{ steps.PR.outputs.pr_body }}
 
