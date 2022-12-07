@@ -10,5 +10,4 @@
 
 * packetbeat
 
-
 - [ ] Requires configuration updates.
