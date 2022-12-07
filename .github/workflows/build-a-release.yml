@@ -13,5 +13,6 @@ jobs:
       id: PR
     - run: |
         echo "---------------------------------"
-        cat ${{ steps.PR.outputs.pr_body }}
+        cat ${{ steps.PR.outputs.pr_body }} >> fomefile
+        cat fomefile
 
