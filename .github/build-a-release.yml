@@ -1,12 +1,6 @@
 name: Build a Release
 on: 
    push:
-    branches:   
-      - 'master'
-    paths:
-      - 'build/**.spec'
-env:
-  NEXUS_URL: "https://artifacts.neosec.com/yum"
 jobs:
   BuildRelease:
    runs-on: ubuntu-latest    
@@ -14,120 +8,9 @@ jobs:
     - uses: actions/checkout@v3
       with:
         persist-credentials: false
+ 
+    - uses: 8BitJonny/gh-get-current-pr@2.1.3
+      id: PR
 
-    - name: Get release version from the versions file
-      id: read-release-tag
-      run: |
-        jq -e .version version && echo "::set-output name=release-tag::$(jq -r .version version)"
-    
-    - name: Create release tag
-      uses: rickstaa/action-create-tag@v1
-      with:
-        tag: ${{ steps.read-release-tag.outputs.release-tag }}
-        message: "Tagged by workflow"
+    - run: echo "Your PR number is ${{ steps.PR.outputs.number }} and its JSON is ${{ steps.PR.outputs.pr }}"
 
-    - name: Setup RPM
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y rpm rpmlint
-
-    - name: Package neosec-node
-      run: |
-        sudo sed -i 's/VERSION/${{ steps.read-release-tag.outputs.release-tag }}/g' build/neosec-node.spec
-
-    - name: Lint RPM spec
-      run: |
-        rpmlint build/neosec-node.spec
-    
-    - name: Build RPM package
-      run: |
-        rpmbuild -bb build/neosec-node.spec
-
-    - name: AWS credentials
-      uses: aws-actions/configure-aws-credentials@v1
-      with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_NEXUS }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_NEXUS }}
-          aws-region: us-east-1
-
-    - name: Get Nexus GPG Passphrase from SSM
-      uses: "marvinpinto/action-inject-ssm-secrets@latest"
-      with:
-        ssm_parameter: "NexusGPGPassphrase"
-        env_variable_name: "NEXUS_GPG_PASSPHRASE"
-
-    - name: Import GPG key
-      uses: crazy-max/ghaction-import-gpg@v4
-      with:
-        gpg_private_key: ${{ secrets.NEXUS_GPG_PRIVATE_KEY }}
-        passphrase: ${{ env.NEXUS_GPG_PASSPHRASE }}
-
-    - name: Sign RPM
-      run: |
-        rpms=(`ls ~/rpmbuild/RPMS/x86_64/*x86_64.rpm`)
-        echo "${rpms[0]}"
-        echo "%_gpg_name NeoSec" >> ~/.rpmmacros
-        gpg --list-keys
-        rpm --addsign ${rpms[0]}
-        gpg --export -a Neosec > gpg.pub
-        cat gpg.pub
-
-    - name: Generate metadata
-      run: |
-        sudo sed -i "s/NEOSEC-NODE_VERSION/${{ steps.read-release-tag.outputs.release-tag }}/g" metadata.json
-        sudo sed -i "s@NEOSEC-NODE-RPM-URL@${{ env.NEXUS_URL }}/neosec-node-${{ steps.read-release-tag.outputs.release-tag }}.rpm@g" metadata.json
-        sudo sed -i "s/CREATION-TIMESTAMP/$(date +'%Y-%m-%dT%H:%M:%S')/g" metadata.json
-
-        NEOSEC_LOGSTASH=`cat build/neosec-node.spec | grep neosec-logstash | awk '{print $4}'`
-        sudo sed -i "s/NEOSEC-LOGSTASH/$NEOSEC_LOGSTASH/g" metadata.json
-
-        NEOSEC_NODE_MANAGER=`cat build/neosec-node.spec | grep neosec-node-manager | awk '{print $4}'` 
-        sudo sed -i "s/NEOSEC-NODE-MANAGER/$NEOSEC_NODE_MANAGER/g" metadata.json
-
-        NEOSEC_RESPONDER=`cat build/neosec-node.spec | grep neosec-responder | awk '{print $4}'`
-        sudo sed -i "s/NEOSEC-RESPONDER/$NEOSEC_RESPONDER/g" metadata.json
-
-        FILEBEAT=`cat build/neosec-node.spec | grep filebeat | awk '{print $4}'`
-        sudo sed -i "s/FILEBEAT/$FILEBEAT/g" metadata.json
-
-        PACKETBEAT=`cat build/neosec-node.spec | grep packetbeat | awk '{print $4}'`
-        sudo sed -i "s/PACKETBEAT/$PACKETBEAT/g" metadata.json
-
-        # Metricbeat had been added to the NMS code
-        # Uncomment these lines when it is added to the neosec-node.spec file.
-        #set METRICBEAT=`cat build/neosec-node.spec | grep  packetbeat | awk '{print $4}'`
-        #sudo sed -i "s/METRICBEAT/$METRICBEAT/g" metadata.json
-
-        # A final desicion on the PR description or 
-        # another form of changelog is to be made.
-        sudo sed -i "s/CHANGELOG/TBD/g" metadata.json
-
-        sudo sed -i "s/CREATOR/${{ github.actor }}/g" metadata.json
-        sudo sed -i "s/RPM/rpm/g" metadata.json
-    
-    - name: Publish RPM to Nexus
-      run: |
-        rpms=(`ls ~/rpmbuild/RPMS/x86_64/*x86_64.rpm`)
-        metadata=`cat metadata.json`
-        aws s3 cp "${rpms[0]}" "s3://publish-to-nexus/neosec-node-rpm/neosec-node-${{ steps.read-release-tag.outputs.release-tag }}.rpm" --metadata $metadata
-
-    - name: Release
-      uses: softprops/action-gh-release@v1
-      with:
-        tag_name: ${{ steps.read-release-tag.outputs.release-tag }}
-        files: metadata.json
-        prerelease: false
-        
-    - name: Slack Notification
-      uses: rtCamp/action-slack-notify@v2
-      env:
-        SLACK_CHANNEL: dev-deployment-announcements
-        SLACK_COLOR: ${{ job.status }}
-        SLACK_ICON: https://www.neosec.com/hubfs/favicon.png
-        SLACK_MESSAGE: "I've created a new rpm package of neosec-node. You can use the command below to install it\n
-                      on your rpm based machine. The doc below will help you to add the neosec-repo to your machine in case you didn't.\n
-                      https://apiseq.atlassian.net/wiki/spaces/RD/pages/1285521456/Install+packages+from+Nexus
-                      \n\n sudo yum updateinfo && sudo yum -y install neosec-node-${{ steps.read-release-tag.outputs.release-tag }}\n\n"
-        SLACK_TITLE: rpm package creation
-        SLACK_USERNAME: neosec-node-workflow
-        SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
