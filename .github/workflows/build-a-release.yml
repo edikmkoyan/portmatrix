@@ -10,7 +10,8 @@ jobs:
     - run: |
         export something="${{ steps.PR.outputs.pr_body }}"
         echo $something
-        #cat -v file | wc -l
-        #sed -i 's/\r$//' file
-        #cat -v file | wc -l
+        cat -v file 
+        sed -i 's/\r$//' file
+        sed -i 's/\n//' file
+        cat -v file
 
