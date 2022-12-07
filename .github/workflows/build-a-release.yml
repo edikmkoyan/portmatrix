@@ -10,5 +10,5 @@ jobs:
     - run: |
         export something="${{ steps.PR.outputs.pr_body }}"
         echo $something > file
-        cat file | wc -l
+        cat file
 
