@@ -11,5 +11,6 @@ jobs:
         export something="${{ steps.PR.outputs.pr_body }}"
         echo $something > file
         cat file
-        
+        tr -d '\r' file
+        cat file
 
