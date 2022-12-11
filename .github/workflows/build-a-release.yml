@@ -7,8 +7,14 @@ jobs:
    steps:
     - uses: 8BitJonny/gh-get-current-pr@2.1.3
       id: PR
+    - uses: jacobtomlinson/gha-find-replace@v2
+      with:
+        find: "TBD"
+        replace: ${{ steps.PR.outputs.pr_body }}
+        include: "metadata.json"
     - run: |
-        TBD='${{ steps.PR.outputs.pr_body }}'
-        echo $TBD | wc -l
-        sudo sed -i -e "s/CHANGELOG/$TBD/g" metadata.json
+        cat metadata.json
+        #TBD='${{ steps.PR.outputs.pr_body }}'
+        #echo $TBD | wc -l
+        #sudo sed -i -e "s/CHANGELOG/$TBD/g" metadata.json
 
