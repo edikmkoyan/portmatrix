@@ -8,5 +8,5 @@ jobs:
     - uses: 8BitJonny/gh-get-current-pr@2.1.3
       id: PR
     - run: |
-        echo ${{ steps.PR.outputs.pr_body }}
+        echo "${{ steps.PR.outputs.pr_body }}"
 
