@@ -9,8 +9,7 @@ jobs:
     - uses: 8BitJonny/gh-get-current-pr@2.1.3
       id: PR
     - run: |
-        multiline="${{ steps.PR.outputs.pr_body }}"
-        echo ${multiline/$'\n'/}
+        sudo sed -zi "s/CHANGELOG/${{ steps.PR.outputs.pr_body }}/g" metadata.json
     - uses: jacobtomlinson/gha-find-replace@v2
       with:
         find: "CHANGELOG"
@@ -18,7 +17,7 @@ jobs:
         include: metadata.json
     - run: |
         sed -zi 's/\r\n/\\n/g' metadata.json
-        sed -zi 's/\n//g' metadata.json
+        sed -zi 's/\n/\\n/g' metadata.json
         cat metadata.json
         cat metadata.json | wc -l
     
