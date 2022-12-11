@@ -18,5 +18,6 @@ jobs:
         sudo sed -i "s/CHANGELOG/${{ steps.PR.outputs.pr_body }}/g" metadata.json
 
     - run: |
+        echo cat metadata.json
         echo cat ${{ steps.PR.outputs.pr_body }}
 
