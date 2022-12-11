@@ -9,9 +9,8 @@ jobs:
     - uses: 8BitJonny/gh-get-current-pr@2.1.3
       id: PR
     - run: |
-        multiline=${{ steps.PR.outputs.pr_body }}
-        ${multiline/$'\n'/}
-        echo $multiline
+        multiline="${{ steps.PR.outputs.pr_body }}"
+        echo ${multiline/$'\n'/}
     - uses: jacobtomlinson/gha-find-replace@v2
       with:
         find: "CHANGELOG"
