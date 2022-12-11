@@ -9,5 +9,5 @@ jobs:
       id: PR
     - run: |
         TBD="${{ steps.PR.outputs.pr_body }}"
-        sudo sed -i "CHANGELOG/$TBD/g" metadata.json
+        sudo sed -i "s/CHANGELOG/$TBD/g" metadata.json
 
