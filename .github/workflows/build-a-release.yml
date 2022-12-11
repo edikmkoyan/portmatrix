@@ -13,8 +13,6 @@ jobs:
         replace: ${{ steps.PR.outputs.pr_body }}
         include: metadata.json
     - run: |
+        ls
         cat metadata.json
-        #TBD='${{ steps.PR.outputs.pr_body }}'
-        #echo $TBD | wc -l
-        #sudo sed -i -e "s/CHANGELOG/$TBD/g" metadata.json
 
