@@ -15,4 +15,10 @@ jobs:
         include: metadata.json
     - run: |
         cat metadata.json | wc -l
+    - uses: jacobtomlinson/gha-find-replace@v2
+      with:
+        find: "\r"
+        replace: ""
+        include: metadata.json
+    
 
