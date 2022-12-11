@@ -10,9 +10,10 @@ jobs:
       id: PR
     - uses: jacobtomlinson/gha-find-replace@v2
       with:
-        find: "TBD"
+        find: "CHANGELOG"
         replace: ${{ steps.PR.outputs.pr_body }}
         include: metadata.json
     - run: |
+        echo "${{ steps.PR.outputs.pr_body }}"
         cat metadata.json
 
