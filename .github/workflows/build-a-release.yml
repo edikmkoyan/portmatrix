@@ -14,5 +14,5 @@ jobs:
         include: metadata.json
     - run: |
         ls
-        cat metadata.json
+        pwd
 
