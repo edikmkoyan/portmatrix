@@ -17,8 +17,7 @@ jobs:
         replace: ${{ steps.PR.outputs.pr_body }}
         include: metadata.json
     - run: |
-        sed -iz 's/\r\n/\\n/g' metadata.json
-        sed -iz 's/\n\n/\\n/g' metadata.json
+        sed -zi 's/\r\n/\\n/g' metadata.json
         cat metadata.json
         cat metadata.json | wc -l
     
