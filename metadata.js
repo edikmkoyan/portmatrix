@@ -1,0 +1,1 @@
+{"Version":"NEOSEC-NODE_VERSION","DownloadUrl":"NEOSEC-NODE-RPM-URL","Timestamp":"CREATION-TIMESTAMP","Logstash":"NEOSEC-LOGSTASH","NodeManager":"NEOSEC-NODE-MANAGER","Responder":"NEOSEC-RESPONDER","Filebeat":"FILEBEAT","Packetbeat":"PACKETBEAT","Metricbeat":"METRICBEAT","ChangeLog":"CHANGELOG","PublishedBy":"CREATOR","Distro":"rpm"}
