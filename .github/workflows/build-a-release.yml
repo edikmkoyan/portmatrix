@@ -15,7 +15,5 @@ jobs:
         include: metadata.json
     - run: |
         sed -zi 's/\r\n/\\n/g' metadata.json
-        cat metadata.json
-        cat metadata.json | wc -l
     
 
