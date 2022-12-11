@@ -14,8 +14,9 @@ jobs:
       # Psuhing to the PR
       # Did it work?
       # maybe it needed to be in the master
-    - run: | 
-        sudo sed -i "s/CHANGELOG/"${{ steps.PR.outputs.pr_body }}"/g" metadata.json
+    - run: |
+        echo cat metadata.json
+        #sudo sed -i "s/CHANGELOG/"${{ steps.PR.outputs.pr_body }}"/g" metadata.json
 
     - run: |
         echo cat metadata.json
