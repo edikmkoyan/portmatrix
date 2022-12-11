@@ -14,5 +14,5 @@ jobs:
         replace: ${{ steps.PR.outputs.pr_body }}
         include: metadata.json
     - run: |
-        cat netadata.json
+        cat metadata.json
 
