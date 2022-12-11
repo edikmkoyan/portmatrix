@@ -11,7 +11,7 @@ jobs:
       with:
         find: "TBD"
         replace: ${{ steps.PR.outputs.pr_body }}
-        include: "metadata.json"
+        include: metadata.json
     - run: |
         cat metadata.json
         #TBD='${{ steps.PR.outputs.pr_body }}'
